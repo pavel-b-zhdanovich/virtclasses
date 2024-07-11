@@ -1,0 +1,13 @@
+#/usr/bin/env bash
+
+_vmstart() {
+ local cur opts
+ COMPREPLY=()
+ cur="${COMP_WORDS[1]}"
+ opts=$(virsh -c qemu:///system list --name --all)
+# if [[ ${cur} == -* ]] ; then
+ COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+ return 0
+# fi
+}
+complete -F _vmstart vmstart

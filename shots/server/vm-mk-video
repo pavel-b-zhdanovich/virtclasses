@@ -1,0 +1,40 @@
+#!/bin/bash
+
+#<zhd comment="каталог /srv/nfs раздается через NFS всем гипервизорам." />
+for room in $(ls /srv/nfs)
+do
+    for hvsor in $(ls /srv/nfs/$room)
+    do
+#       echo $hvsor
+        for vm in $(ls /srv/nfs/$room/$hvsor)
+        do 
+        dirsuffix=$room/$hvsor/$vm
+        dir=/srv/nfs/$dirsuffix
+        [ -d "$dir" ] || continue
+        tmp=/tmp/shots/$dirsuffix
+        www=/var/www/shots/$dirsuffix
+        mkdir -p "$tmp"
+        mkdir -p "$www"
+        while [ -f lock ]
+        do
+            sleep 2
+        done
+        mv $dir/$vm*.png $tmp
+        cd $tmp
+        ffmpeg -framerate 1\
+         -i $tmp/$vm-%04d.png\
+         -c:v libx264\
+         -r 1\
+         -pix_fmt yuv420p\
+         -threads 1\
+         $www/$room-$hvsor-$vm-$(date +"%d-%m-%y-%H-%M-%S").mp4
+        rm -r $tmp
+        done
+    done
+done
+exit 0
+
+#<zhd comment="Файлы лучше именовать по-другому, чтобы сортировка по времени совпадала с лексикографической" />
+
+#<zhd comment="Проблема: при включении машины первый скрин делается в низком разрешении. В этом разрешении создаётся весь ролик. Нужно искать максимальное разрешение по всем картинкам и указывать его в параметрах ffmpeg". Или задавать его константой, но это не гибко." />
+

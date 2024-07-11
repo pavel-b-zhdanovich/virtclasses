@@ -1,0 +1,24 @@
+#!/bin/bash
+PATH=$PATH:/opt/scripts/
+vm=$(vmgetworking)
+[ -n "$vm" ] || exit 0
+cd /mnt/shots
+[ -d "$vm" ] || mkdir $vm
+cd $vm
+touch lock
+lastfile=$(ls -1 $vm*.png 2>/dev/null |tail -n 1)
+if [ -n "$lastfile" ]
+then
+    s=$(basename $lastfile .png)
+    a=${s:(-4)}
+else
+    a=0
+fi
+a=10#$a
+i=$((a+1))
+printf -v num "%04d" $i
+shot=$vm-$num
+### virsh screenshot $vm /tmp/$shot.ppm
+spicy-screenshot --uri=spice:///system -p 5900 -o /tmp/$shot.ppm
+convert /tmp/$shot.ppm ./$shot.png; rm /tmp/$shot.ppm
+rm lock

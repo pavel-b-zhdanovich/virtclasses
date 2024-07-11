@@ -1,0 +1,12 @@
+[Unit]
+Description="Таймер по созданию снимков экрана работающей ВМ"
+
+[Timer]
+AccuracySec=1ms
+OnBootSec=1min
+OnActiveSec=2s
+OnUnitActiveSec=10s
+Unit=vmscreenshot.service
+
+[Install]
+WantedBy=multi-user.target

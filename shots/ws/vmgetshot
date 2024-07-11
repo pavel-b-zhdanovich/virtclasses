@@ -1,0 +1,32 @@
+#!/bin/bash
+PATH=$PATH:/opt/scripts/
+#<zhd comment="Определяем название работающей ВМ. См. соотв. скрипт в mu/scripts" />
+vm=$(vmgetworking)
+[ -n "$vm" ] || exit 0
+
+#<zhd comment="Этот каталог находится на NFS-томе:" />
+cd /mnt/shots
+[ -d "$vm" ] || mkdir $vm
+cd $vm
+
+#<zhd comment="Блокировка. пока пишется новый скриншот, сервер ждёт и не берёт файлы в обработку."/>
+touch lock
+lastfile=$(ls -1 $vm*.png 2>/dev/null |tail -n 1)
+if [ -n "$lastfile" ]
+then
+    s=$(basename $lastfile .png)
+    a=${s:(-4)}
+else
+    a=0
+fi
+a=10#$a
+i=$((a+1))
+printf -v num "%04d" $i
+shot=$vm-$num
+
+#<zhd comment="основа этого скрипта:" /> 
+virsh screenshot $vm /tmp/$shot.ppm
+convert /tmp/$shot.ppm ./$shot.png; rm /tmp/$shot.ppm
+
+rm lock
+

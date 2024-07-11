@@ -1,0 +1,12 @@
+#!/bin/bash
+vm=$1
+vmold=$(vmgetworking)
+if [ "$vm" == "$vmold" ]; then echo "Уже запущена!"; exit 0 ; fi
+vmstop
+virsh -c qemu:///system start --domain $vm
+
+while [ -z "$(vmgetvnc)" ]
+    do 
+    sleep 2
+    done
+systemctl --user start novnc@"$(vmgetvnc)"

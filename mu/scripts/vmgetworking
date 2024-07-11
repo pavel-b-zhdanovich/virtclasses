@@ -1,0 +1,2 @@
+#!/bin/bash
+virsh -c qemu:///system list |tail -n +3|sed -e 's/[[:space:]]\+/ /g' |cut -d' ' -f 3

@@ -1,0 +1,9 @@
+#!/bin/bash
+vnc=$(vmgetvnc)
+vmold=$(vmgetworking)
+while [ -n "$(vmgetworking)" ]
+    do
+    virsh -c qemu:///system shutdown --mode acpi --domain "$vmold"
+    sleep 5
+    done
+systemctl --user stop 'novnc@*'

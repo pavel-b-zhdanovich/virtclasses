@@ -1,0 +1,5 @@
+#!/bin/bash
+vm=$1
+#echo  "sudo virsh start $vm"
+#exit 0
+for i in {1..4} {6..13} ; do echo $i; ssh -f -n master@10.2.206.$i "sudo virsh start $vm"; done

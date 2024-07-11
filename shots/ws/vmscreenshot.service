@@ -1,0 +1,5 @@
+[Unit]
+Description="Сделать снимок экрана работающей ВМ"
+
+[Service]
+ExecStart=/opt/scripts/vmgetshot

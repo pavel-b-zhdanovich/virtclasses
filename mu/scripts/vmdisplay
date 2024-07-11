@@ -1,0 +1,3 @@
+#!/bin/bash
+vm=$(vmgetworking)
+startx /usr/bin/virt-viewer -f -k --kiosk-quit on-disconnect -d -a --connect qemu:///system "$vm"

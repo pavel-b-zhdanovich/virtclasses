@@ -1,0 +1,11 @@
+[Unit]
+Description=NoVNC
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/noVNC
+ExecStart=/opt/noVNC/utils/novnc_proxy --vnc localhost:59%i --listen 60%i
+Restart=on-abort
+
+[Install]
+WantedBy=default.target
